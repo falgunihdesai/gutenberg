@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Enhancements
+
+-   `ColorPalette`: Improve readability of color name and value ([#50450](https://github.com/WordPress/gutenberg/pull/50450)).
+
 ## 24.0.0 (2023-05-10)
 
 ### Breaking Changes
