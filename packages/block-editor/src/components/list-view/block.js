@@ -76,6 +76,7 @@ function ListViewBlock( {
 		},
 		[ isContentLocked, clientId, isSelected ]
 	);
+	const { getSelectedBlockClientIds } = useSelect( blockEditorStore );
 
 	const canExpand = isContentLocked ? false : canEdit;
 	const isFirstSelectedBlock =
@@ -179,7 +180,11 @@ function ListViewBlock( {
 
 	const updateSelection = useCallback(
 		( newClientId ) => {
-			selectBlock( undefined, newClientId, null, null );
+			const selectedBlockClientIds = getSelectedBlockClientIds();
+			// Select the block to be focused if there isn't any block selected.
+			if ( ! selectedBlockClientIds.length ) {
+				selectBlock( undefined, newClientId, null, null );
+			}
 
 			const getFocusElement = () => {
 				const row = treeGridElementRef.current?.querySelector(
