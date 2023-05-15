@@ -76,7 +76,6 @@ function ListViewBlock( {
 		},
 		[ isContentLocked, clientId, isSelected ]
 	);
-	const { getSelectedBlockClientIds } = useSelect( blockEditorStore );
 
 	const canExpand = isContentLocked ? false : canEdit;
 	const isFirstSelectedBlock =
@@ -178,17 +177,15 @@ function ListViewBlock( {
 		[ clientId, selectBlock ]
 	);
 
-	const updateSelection = useCallback(
-		( newClientId ) => {
-			const selectedBlockClientIds = getSelectedBlockClientIds();
-			// Select the block to be focused if there isn't any block selected.
-			if ( ! selectedBlockClientIds.length ) {
-				selectBlock( undefined, newClientId, null, null );
+	const updateFocusAndSelection = useCallback(
+		( focusClientId, shouldSelectBlock ) => {
+			if ( shouldSelectBlock ) {
+				selectBlock( undefined, focusClientId, null, null );
 			}
 
 			const getFocusElement = () => {
 				const row = treeGridElementRef.current?.querySelector(
-					`[role=row][data-block="${ newClientId }"]`
+					`[role=row][data-block="${ focusClientId }"]`
 				);
 				if ( ! row ) return null;
 				// Focus the first focusable in the row, which is the ListViewBlockSelectButton.
@@ -308,7 +305,7 @@ function ListViewBlock( {
 							selectedClientIds={ selectedClientIds }
 							ariaLabel={ blockAriaLabel }
 							ariaDescribedBy={ descriptionId }
-							updateSelection={ updateSelection }
+							updateFocusAndSelection={ updateFocusAndSelection }
 						/>
 						<div
 							className="block-editor-list-view-block-select-button__description"
@@ -369,9 +366,11 @@ function ListViewBlock( {
 								onFocus,
 							} }
 							disableOpenOnArrowDown
-							__experimentalSelectBlock={ updateSelection }
 							expand={ expand }
 							expandedState={ expandedState }
+							__experimentalSelectBlock={
+								updateFocusAndSelection
+							}
 						/>
 					) }
 				</TreeGridCell>
